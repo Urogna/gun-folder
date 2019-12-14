@@ -37,16 +37,22 @@ export const GunFolder = ({ id, priv, epriv }) => {
     return <div>Loading...</div>;
   }
 
-  const modules = 
-    cs.sort(getSet(data, `${id}.folders`).map(folder => {
-    return {
-      ...folder
-    }}))
+  const folder = {
+    ...data[id],
+    folders: cs.sort(getSet(data, `${id}.folders`).map(folder => {
+      return {
+        ...folder
+      }})),
+  }
 
   return (
       <Folders
           id={id}
-          folders={modules}
+          folders={folder.folders}
+          direction={folder.direction}
+          onSetDirection={dir => {
+            put([id, "direction", dir])
+          }}
           onCreateFolder={name => {
             const key = getUUID(gun);
             const folderId = `${id}.folders.${key}`;
@@ -57,6 +63,7 @@ export const GunFolder = ({ id, priv, epriv }) => {
           }}
           onSetFolderName={(id, name) => put([id, "name", name])}
           onSetFolderUrl={(id, url) => put([id, "url", url])}
+          onSetFolderDirection={(id, dir) => put([id, "direction", dir])}
           onMoveFolder={(id, prev, next) =>
             put([id, "index", JSON.stringify(cs.getIndexBetween(id, prev, next))])
           }

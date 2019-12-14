@@ -19,10 +19,19 @@ html,
   flex-direction: column;
 }
 
-.folder {
+.horizontal-folder {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
+  margin: auto;
+}
+
+.vertical-folder {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: row;
   width: 100%;
   height: 100%;
   margin: auto;
@@ -32,11 +41,23 @@ html,
   width: 100%;
   height: 100%;
   margin: auto;
+  position: relative;
 }
 
 iframe {
   width: 100%;
   height: 100%;
+}
+
+.tag {
+  width: 100%;
+}
+
+.tags {
+  width: 12rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 
 input {
@@ -45,4 +66,19 @@ input {
 
 .selected {
   background-color: gray;
+}
+
+.edit {
+  position: absolute;
+  top: 0;
+  right: 0
+}
+
+.bottom-l {
+  position: absolute;
+  bottom: 0
+}
+
+.absolute {
+  position: absolute
 }

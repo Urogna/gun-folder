@@ -1,4 +1,4 @@
-# GUN Horizontal Folder
+# GUN Folder
 
 ## Building and running on localhost
 
