@@ -15,6 +15,8 @@ export const Folders = ({
 
     let tags = []
     const [currentId, setCurrentId] = useState()
+    const [hoverId, setHoverId] = useState()
+    const [editId, setEditId] = useState()
 
     useEffect(() => {
         if(!currentId) {
@@ -27,64 +29,95 @@ export const Folders = ({
     folders.forEach((folder, i) => {
         const id = getId(folder)
         tags.push(
-            <button
-                className={id === currentId? !direction ? "selected" : "selected tag": !direction? "" : "tag"}
-                onClick={() => {
-                    setCurrentId(id);
-                }}>
-                {folder.name}
-            </button>
+            <div
+                className="module"
+                onMouseEnter={() => { setHoverId(id) }} 
+                onMouseLeave={() => { setHoverId("this is a hack") }}>
+                <button
+                    className={
+                        (id === currentId? !direction ? "selected" : "selected tag": !direction? "" : "tag")
+                        + " module-button"
+                    }
+                    onClick={() => {
+                        setCurrentId(id);
+                        setEditId("this is a hack")
+                    }}>
+                    {folder.name}
+                </button>
+                {hoverId === id && hoverId == currentId? (
+                    <button
+                        className="special"
+                        onClick={() => {
+                        setEditId(id);
+                    }}>
+                        e
+                    </button>
+                ) : (
+                    <>
+                    </>
+                )}
+            </div>
         )
     });
 
     return ( !direction ?
         (
-            <div className={"horizontal-folder"}>
-                <div>
+            <>
+                <div className={"horizontal-bar"}>
                     {tags}
-                    <button onClick={() => {
-                            onCreateFolder("NewFolder");
-                            setCurrentId("this is some hack")
-                        }}>
-                        +
-                    </button>
+                    <div className="special-container">
+                        <button
+                            className="special"
+                            onClick={() => {
+                                onCreateFolder("NewFolder");
+                                setCurrentId("this is a hack")
+                            }}>
+                            +
+                        </button>
+                        <button
+                            className="special"
+                            onClick={() => {onSetDirection(true)}}>
+                            s
+                        </button>
+                    </div>
                 </div>
                 <div className="content">
                     <Folder 
                         id={currentId}
+                        editId={editId}
                         folder={folders.find(folder => getId(folder) === currentId)}
                         setName={onSetFolderName}
                         setUrl={onSetFolderUrl}
                         setDir={onSetFolderDirection}/>
                 </div>
-                <button
-                    className="edit"
-                    onClick={() => {onSetDirection(true)}}>
-                    switch
-                </button>
-            </div>
+            </>
         ) : (
-            <div className="vertical-folder">
-                <div className="tags">
-                    {tags}
-                    <button 
-                        onClick={() => {onCreateFolder("NewFolder")}}
-                        className="add">
-                        +
-                    </button>
+            <div className="vertical">
+                <div className="vertical-bar">
+                    <div className="tags">
+                        {tags}
+                        <div className="special-container">
+                            <button 
+                                onClick={() => {onCreateFolder("NewFolder")}}
+                                className="special">
+                                +
+                            </button>
+                            <button
+                                className="special"
+                                onClick={() => {onSetDirection(false)}}>
+                                s
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div className="content">
                     <Folder 
                         id={currentId}
+                        editId={editId}
                         folder={folders.find(folder => getId(folder) === currentId)}
                         setName={onSetFolderName}
                         setUrl={onSetFolderUrl}/>
                 </div>
-                <button
-                    className="bottom-l"
-                    onClick={() => {onSetDirection(false)}}>
-                    switch
-                </button>
             </div>
         )
     )
@@ -92,29 +125,20 @@ export const Folders = ({
 
 const Folder = ({
     id,
+    editId,
     folder,
     setName,
     setUrl,
 }) => {
-    const pub = getPub(id);
     const [newName, setNewName] = useState("");
     const [newUrl, setNewUrl] = useState("");
-    const [editable, setEditable] = useState(id)
 
     return folder?
         (
-            folder.url && editable != id?
+            folder.url && editId != id?
             (
                 <>
                     <iframe src={folder.url} frameBorder="0"/>
-                    <button
-                        className="edit" 
-                        onClick={() => {
-                            setEditable(id)
-                            setNewUrl(folder.url)
-                        }}>
-                        edit
-                    </button>
                 </>
             ) : (
                 <>
@@ -141,18 +165,13 @@ const Folder = ({
                     >
                         <input
                             autoFocus
-                            value={newUrl}
+                            value={newUrl? newUrl : folder.url}
                             onChange={e => {
                                 setNewUrl(e.target.value);
                             }}
                             placeholder="set tool url"
                         />
                     </form>
-                    <button
-                        className="edit" 
-                        onClick={() => {setEditable("this is a hack")}}>
-                        back
-                    </button>
                 </>
             )
         ) : (
